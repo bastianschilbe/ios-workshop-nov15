@@ -14,6 +14,11 @@ class Point : UIControl {
         layer.cornerRadius = frame.width / 2
     }
     
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    
     func hide() {
         transform = CGAffineTransformMakeScale(0.001, 0.001)
     }
@@ -39,7 +44,4 @@ class Point : UIControl {
         }
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 }

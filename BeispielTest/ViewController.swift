@@ -26,6 +26,10 @@ class ViewController: UIViewController, GameDelegate {
         label.text = "Taps: \(tapCount)"
     }
     
+    func gameDidEnd(tapCount: Int) {
+        print("didEnd \(tapCount)")
+    }
+    
 }
 
 extension UIColor {
