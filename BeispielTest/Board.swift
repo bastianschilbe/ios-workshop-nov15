@@ -1,28 +1,29 @@
 import UIKit
 
 class Board {
-    let view : UIView
-    var animator : UIDynamicAnimator?
-    let field = UIFieldBehavior.noiseFieldWithSmoothness(1, animationSpeed: 10)
+    let field      = UIFieldBehavior.noiseFieldWithSmoothness(1, animationSpeed: 10)
     let collission = UICollisionBehavior()
     
-    init(view : UIView) {
-        self.view = view
-        self.animator = UIDynamicAnimator(referenceView: view)
+    let view : UIView
+    let animator : UIDynamicAnimator
+    
+    init(view boardView: UIView) {
+        view = boardView
+        animator = UIDynamicAnimator(referenceView: view)
         collission.translatesReferenceBoundsIntoBoundary = true
     }
     
     func startSimulation() {
-        self.animator?.addBehavior(field)
-        self.animator?.addBehavior(collission)
+        animator.addBehavior(field)
+        animator.addBehavior(collission)
     }
     
     func stopSimulation() {
-        self.animator?.removeAllBehaviors()
+        animator.removeAllBehaviors()
     }
     
-    func addView(view: UIView) {
-        self.view.addSubview(view)
+    func addView(_ newView: UIView) {
+        view.addSubview(newView)
     }
     
     func addItem(item : UIDynamicItem) {

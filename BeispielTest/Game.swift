@@ -29,10 +29,8 @@ class Game : NSObject {
     func stop() {
         board.stopSimulation()
         NSObject.cancelPreviousPerformRequestsWithTarget(self)
-        for v in board.view.subviews {
-            if let v = v as? Point {
-                v.disappear()
-            }
+        for case let v as Point in board.view.subviews {
+            v.disappear()
         }
         started = false
         delegate?.gameDidEnd(tapManager.taps)
@@ -40,21 +38,18 @@ class Game : NSObject {
     
     func gameLoop() {
         emitPoint()
-        self.performSelector("gameLoop", withObject: nil, afterDelay: interval)
+        performSelector("gameLoop", withObject: nil, afterDelay: interval)
         if isFinished() {
             stop()
         }
     }
     
     func emitPoint() {
-        let p = randomPoint()
-        board.addView(p)
-        p.appear { () -> () in
-            if p.superview != nil {
-                self.board.addItem(p)
-            }
-        }
+        let p = Point.randomPoint()
         p.addTarget(self, action: "tapped:", forControlEvents: .TouchUpInside)
+        
+        board.addView(p)
+        p.appear { self.board.addItem(p) }
     }
     
     func tapped(p : Point) {
@@ -66,14 +61,6 @@ class Game : NSObject {
         delegate?.gameDidTap(tapManager.taps)
     }
 
-    func randomPoint() -> Point {
-        let p = Point()
-        let screenWidth = UIScreen.mainScreen().bounds.width
-        let screenHeight = UIScreen.mainScreen().bounds.height
-        p.center = CGPoint(x: random() % Int(screenWidth), y: random() % Int(screenHeight))
-        return p
-    }
-    
     func getInterval() -> NSTimeInterval {
         let int = NSDate().timeIntervalSinceDate(startTime)
         let newint = 3.0 / (pow(int, 1.1) + 1) + 0.4

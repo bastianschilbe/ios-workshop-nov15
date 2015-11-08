@@ -1,24 +1,16 @@
 import Foundation
 
 struct TapsManager {
-    private var _taps = 0
-    private var _lastTap = NSDate()
-    
-    var taps : Int {
-        return _taps
-    }
-    
-    var lastTap : NSDate {
-        return _lastTap
-    }
+    private(set) var taps = 0
+    private(set) var lastTap = NSDate()
     
     var sinceLast : NSTimeInterval {
-        return NSDate().timeIntervalSinceDate(_lastTap)
+        return NSDate().timeIntervalSinceDate(lastTap)
     }
     
     mutating func add() {
-        _taps++
-        _lastTap = NSDate()
+        taps++
+        lastTap = NSDate()
     }
 }
 
