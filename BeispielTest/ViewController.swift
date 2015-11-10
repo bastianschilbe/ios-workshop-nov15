@@ -1,54 +1,51 @@
 import UIKit
 
-class ViewController: UIViewController, GameDelegate {
+class ViewController: UIViewController, GameDelegate, UIAlertViewDelegate {
 
+    @IBOutlet weak var backgroundImageView: UIImageView!
+    @IBOutlet weak var bottomImageView: UIImageView!
+    @IBOutlet weak var topImageView: UIImageView!
+    @IBOutlet weak var tabsLabel: UILabel!
+    
     var game : Game?
-    @IBOutlet weak var viewTop: UIImageView!
-    @IBOutlet weak var viewBottom: UIImageView!
-    @IBOutlet weak var label: UILabel!
+    
+    var highscore : Int {
+        get {
+            return NSUserDefaults.standardUserDefaults().valueForKey("highscore") as? Int ?? 0
+        }
+        set {
+            NSUserDefaults.standardUserDefaults().setValue(newValue, forKey: "highscore")
+            NSUserDefaults.standardUserDefaults().synchronize()
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        viewTop.layer.defaultShadow()
-        viewBottom.layer.defaultShadow()
-        label.textColor = UIColor.darkBrown()
 
-        let boardView = UIView(frame: view.bounds)
-        view.insertSubview(boardView, belowSubview: viewTop)
+        let board = Board()
+        view.insertSubview(board, aboveSubview: backgroundImageView)
         
-        game = Game(view: boardView)
+        game = Game(board: board)
         game?.delegate = self
-        game?.start()
+        game?.startGame()
     }
     
-    func gameDidTap(tapCount: Int) {
-        label.text = "Taps: \(tapCount)"
+    func didTapCountChange(tapCount: Int) {
+        //hier ändern wir gleich das Label
+        tabsLabel.text = "Tabs: \(tapCount) / \(highscore)"
     }
-    
-    func gameDidEnd(tapCount: Int) {
-        print("didEnd \(tapCount)")
-    }
-    
-}
 
-extension UIColor {
-    class func fillColor() -> UIColor {
-        return UIColor(red: 215.0/255, green: 219.0/255, blue: 152.0/255, alpha: 1)
+    func didGameEnd(tapCount: Int) {
+        let oldHighscore = highscore
+        if tapCount > oldHighscore {
+            highscore = tapCount
+        }
+        UIAlertView(title: "You lost!", message: "Schade schade schade", delegate: self, cancelButtonTitle: "OK").show()
     }
-    class func borderColor() -> UIColor {
-        return UIColor(red: 239/255.0, green: 244/255.0, blue: 152/255.0, alpha: 1)
+    
+    func alertView(alertView: UIAlertView, didDismissWithButtonIndex buttonIndex: Int) {
+        game?.startGame()
     }
-    class func darkBrown() -> UIColor {
-        return UIColor(red: 99/255.0, green: 88/255.0, blue: 81/255.0, alpha: 1)
-    }
-}
-
-extension CALayer {
-    func defaultShadow() {
-        shadowRadius = 5
-        shadowOffset = CGSize(width: 0, height: 2)
-        shadowOpacity = 0.5
-        shadowColor = UIColor.blackColor().CGColor
-    }
+    
 }

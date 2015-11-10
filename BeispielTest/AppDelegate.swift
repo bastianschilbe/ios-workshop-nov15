@@ -1,8 +1,8 @@
 //
 //  AppDelegate.swift
-//  BeispielTest
+//  CookieClicker
 //
-//  Created by Sebastian Schilbe on 16.09.15.
+//  Created by Sebastian Schilbe on 09.11.15.
 //  Copyright © 2015 Sebastian Schilbe. All rights reserved.
 //
 

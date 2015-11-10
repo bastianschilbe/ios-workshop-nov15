@@ -1,39 +1,47 @@
 import UIKit
 
-class Board {
-    let field      = UIFieldBehavior.noiseFieldWithSmoothness(1, animationSpeed: 10)
-    let collission = UICollisionBehavior()
+class Board : UIView {
+
+    var animator : UIDynamicAnimator?
     
-    let view : UIView
-    let animator : UIDynamicAnimator
+    let field = UIFieldBehavior.noiseFieldWithSmoothness(0.01, animationSpeed: 1)
     
-    init(view boardView: UIView) {
-        view = boardView
-        animator = UIDynamicAnimator(referenceView: view)
-        collission.translatesReferenceBoundsIntoBoundary = true
+    let collision : UICollisionBehavior = {
+        let c = UICollisionBehavior()
+        c.translatesReferenceBoundsIntoBoundary = true
+        return c
+    }()
+    
+    init() {
+        super.init(frame: UIScreen.mainScreen().bounds)
+        animator = UIDynamicAnimator(referenceView: self)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     func startSimulation() {
-        animator.addBehavior(field)
-        animator.addBehavior(collission)
+        animator?.addBehavior(field)
+        animator?.addBehavior(collision)
     }
     
     func stopSimulation() {
-        animator.removeAllBehaviors()
+        animator?.removeAllBehaviors()
     }
     
-    func addView(_ newView: UIView) {
-        view.addSubview(newView)
+    func addView(view: UIView) {
+        addSubview(view)
     }
     
-    func addItem(item : UIDynamicItem) {
-        collission.addItem(item)
+    func addItem(item: UIDynamicItem) {
         field.addItem(item)
+        collision.addItem(item)
     }
     
     func removeItem(item: UIDynamicItem) {
-        collission.removeItem(item)
         field.removeItem(item)
+        collision.removeItem(item)
     }
-}
 
+}
